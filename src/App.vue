@@ -1,12 +1,44 @@
 <template>
   <div id="app">
+    <form>
+      <select @click="showCheckboxes">
+        <option>Select an option</option>
+      </select>
+      <div id="checkboxes" :class="{ showclick: clickSelect }">
+        <label for="one">
+          <input
+            type="checkbox"
+            id="one"
+            value="australia"
+            v-model="filter"
+          />Australia</label
+        >
+        <label for="two">
+          <input
+            type="checkbox"
+            id="two"
+            value="canada"
+            v-model="filter"
+          />Canada</label
+        >
+        <label for="three">
+          <input
+            type="checkbox"
+            id="three"
+            value="usa"
+            v-model="filter"
+          />Usa</label
+        >
+      </div>
+    </form>
+
     <table id="customers">
       <tr>
         <th>Company</th>
         <th>Contact</th>
         <th>Country</th>
       </tr>
-      <tr v-for="(data, i) in datas" :key="i">
+      <tr v-for="(data, i) in secondData" :key="i">
         <td>{{ data.Company }}</td>
         <td>{{ data.Contact }}</td>
         <td>{{ data.Country }}</td>
@@ -48,13 +80,17 @@
 
 <script>
 import axios from "axios";
+import { filter } from "minimatch";
 export default {
   data() {
     return {
       datas: [],
       Country: "",
       Company: "",
-      Contact: ""
+      Contact: "",
+      secondData: [],
+      clickSelect: false,
+      filter: []
     };
   },
   created() {
@@ -74,17 +110,72 @@ export default {
           this.getData();
         });
     },
+    showCheckboxes() {
+      this.clickSelect = !this.clickSelect;
+    },
     getData() {
       axios.get("https://bemijoe.herokuapp.com/").then(data => {
         this.datas = data.data;
+        this.secondData = data.data;
         console.log(data);
       });
+    }
+  },
+  watch: {
+    filter() {
+      var aaa = this.datas.filter(a => {
+        return this.filter.includes(a.Country);
+      });
+
+      if (aaa.length === 0) {
+        console.log(aaa);
+        this.secondData = this.datas;
+      } else {
+        this.secondData = aaa;
+      }
     }
   }
 };
 </script>
 
 <style>
+.showclick {
+  display: grid !important;
+}
+/* .multiselect {
+  width: 200px;
+}
+
+.selectBox {
+  position: relative;
+}
+
+.selectBox select {
+  width: 100%;
+  font-weight: bold;
+}
+
+.overSelect {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}*/
+
+#checkboxes {
+  display: none;
+  border: 1px #dadada solid;
+}
+/*
+checkboxes label {
+  display: block;
+}
+
+#checkboxes label:hover {
+  background-color: #1e90ff;
+} */
+
 input[type="text"],
 select {
   width: 100%;
