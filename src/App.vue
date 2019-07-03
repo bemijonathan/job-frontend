@@ -1,31 +1,60 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+    <table id="customers">
+      <tr>
+        <th>Company</th>
+        <th>Contact</th>
+        <th>Country</th>
+      </tr>
+      <tr v-for="(data, i) in data" :key="i">
+        <td>{{ data.Company }}</td>
+        <td>{{ data.Contact }}</td>
+        <td>{{ data.Country }}</td>
+      </tr>
+    </table>
   </div>
 </template>
 
+<script>
+import axios from "axios";
+export default {
+  data() {
+    [];
+  },
+  created() {
+    axios
+      .get("https://bemijoe.herokuapp.com/")
+      .then(data => (this.lists = data.data));
+  }
+};
+</script>
+
 <style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+#customers td,
+#customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+#customers tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#customers tr:hover {
+  background-color: #ddd;
+}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4caf50;
+  color: white;
 }
 </style>
